@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Sales Agent Team — Universe</title>
+<style>
+  :root {
+    --bg: #0e1116;
+    --panel: #161b22;
+    --panel-2: #1c232d;
+    --line: #2a3340;
+    --muted: #8b97a8;
+    --text: #e6edf3;
+    --accent: #f97316;       /* sales agent team */
+    --accent-soft: #f9731620;
+    --cue: #38bdf8;          /* cues */
+    --sa: #a78bfa;           /* sales agent */
+    --in: #34d399;           /* integration in */
+    --out: #f472b6;          /* feedback out */
+    --paj: #facc15;          /* PAJ + category triangle */
+  }
+  * { box-sizing: border-box; }
+  html, body { margin:0; padding:0; background: var(--bg); color: var(--text);
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Inter, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  header { padding: 28px 32px 0; max-width: 1400px; margin: 0 auto; }
+  header h1 { margin: 0 0 4px; font-size: 22px; letter-spacing: .2px; }
+  header p { margin: 0; color: var(--muted); font-size: 13px; }
+  .legend { display: flex; gap: 14px; flex-wrap: wrap; margin: 14px 0 0; font-size: 12px; color: var(--muted); }
+  .legend .dot { display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:6px; vertical-align: middle; }
+
+  .stage {
+    position: relative;
+    max-width: 1400px;
+    margin: 20px auto 60px;
+    padding: 24px;
+    height: 920px;
+  }
+  svg.wires {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+  }
+  .node {
+    position: absolute;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 10px 12px;
+    font-size: 12.5px;
+    line-height: 1.35;
+    box-shadow: 0 1px 0 rgba(255,255,255,.02) inset, 0 6px 24px rgba(0,0,0,.25);
+  }
+  .node .title { font-weight: 600; font-size: 12px; letter-spacing: .2px; }
+  .node .sub { color: var(--muted); font-size: 11px; margin-top: 2px; }
+  .node.tag-in    { border-color: #1f5141; background: #11241d; }
+  .node.tag-out   { border-color: #5a1f44; background: #251220; }
+  .node.tag-paj   { border-color: #5e4a10; background: #251f0c; }
+  .node.tag-cue   { border-color: #1e4862; background: #0f2030; }
+  .node.tag-sa    { border-color: #44366e; background: #1a1430; }
+
+  /* Center hub */
+  .hub {
+    position: absolute;
+    left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+    width: 360px;
+    background: linear-gradient(180deg, #1a1310, #14110e);
+    border: 1px solid #6a3a14;
+    border-radius: 16px;
+    padding: 14px 16px 12px;
+    box-shadow: 0 0 0 4px rgba(249,115,22,.06), 0 18px 50px rgba(0,0,0,.45);
+  }
+  .hub .name { font-size: 13px; font-weight: 700; color: var(--accent); letter-spacing: .4px; }
+  .hub h2 { margin: 2px 0 8px; font-size: 18px; }
+  .hub .row { display:flex; gap: 8px; margin-top: 8px; }
+  .product {
+    flex: 1; border-radius: 10px; padding: 8px 10px;
+    background: var(--panel-2); border: 1px solid var(--line);
+  }
+  .product.cues { border-color: #1e4862; }
+  .product.sa   { border-color: #44366e; }
+  .product .ptitle { font-weight: 600; font-size: 12px; }
+  .product .pmeta  { color: var(--muted); font-size: 10.5px; margin-top: 2px; }
+  .pill {
+    display: inline-block; padding: 2px 7px; border-radius: 999px;
+    font-size: 10px; background: #20262e; color: var(--muted); margin: 4px 4px 0 0;
+    border: 1px solid var(--line);
+  }
+  .pill.cue { color: var(--cue); border-color: #1e4862; }
+  .pill.sa  { color: var(--sa);  border-color: #44366e; }
+
+  /* Section headers floating around the stage */
+  .section-label {
+    position: absolute;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* Footer note */
+  footer { max-width: 1400px; margin: 0 auto 40px; padding: 0 32px; color: var(--muted); font-size: 12px; }
+  footer code { background: #161b22; padding: 1px 6px; border-radius: 4px; border: 1px solid var(--line); color: var(--text); }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Sales Agent Team — where we sit in the org</h1>
+  <p>Two products in the centre (Cues + Sales Agent), domains pushing capability <em>in</em> on the left, domains pulling insight <em>out</em> on the right, and the load-bearing PAJ ↔ Category triangle on top.</p>
+  <div class="legend">
+    <span><span class="dot" style="background:var(--accent)"></span>Our team</span>
+    <span><span class="dot" style="background:var(--cue)"></span>Cues</span>
+    <span><span class="dot" style="background:var(--sa)"></span>Sales Agent</span>
+    <span><span class="dot" style="background:var(--paj)"></span>PAJ + Category (skills per cluster)</span>
+    <span><span class="dot" style="background:var(--in)"></span>Integration <em>in</em></span>
+    <span><span class="dot" style="background:var(--out)"></span>Feedback <em>out</em></span>
+  </div>
+</header>
+
+<div class="stage" id="stage">
+  <!-- WIRES -->
+  <svg class="wires" viewBox="0 0 1400 920" preserveAspectRatio="none">
+    <defs>
+      <marker id="arrow-in" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+        <path d="M0,0 L10,5 L0,10 z" fill="#34d399" />
+      </marker>
+      <marker id="arrow-out" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+        <path d="M0,0 L10,5 L0,10 z" fill="#f472b6" />
+      </marker>
+      <marker id="arrow-paj" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+        <path d="M0,0 L10,5 L0,10 z" fill="#facc15" />
+      </marker>
+    </defs>
+
+    <!-- Hub centre roughly (700, 460). Curves from left nodes into hub. -->
+    <!-- IN (left side) -> hub left edge ~520,460 -->
+    <g fill="none" stroke="#34d399" stroke-width="1.4" opacity="0.85" marker-end="url(#arrow-in)">
+      <path d="M 230,160 C 360,160 420,320 520,420" />
+      <path d="M 200,240 C 340,240 410,360 520,440" />
+      <path d="M 180,320 C 320,320 410,400 520,455" />
+      <path d="M 180,400 C 320,400 410,430 520,470" />
+      <path d="M 180,480 C 320,480 410,470 520,485" />
+      <path d="M 180,560 C 320,560 410,510 520,500" />
+      <path d="M 200,640 C 340,640 410,560 520,510" />
+      <path d="M 230,720 C 360,720 420,610 520,520" />
+    </g>
+
+    <!-- OUT (hub right edge ~880,460 to right side) -->
+    <g fill="none" stroke="#f472b6" stroke-width="1.4" opacity="0.85" marker-end="url(#arrow-out)">
+      <path d="M 880,430 C 980,330 1060,240 1170,180" />
+      <path d="M 880,445 C 990,400 1060,360 1170,300" />
+      <path d="M 880,460 C 1000,460 1060,460 1170,420" />
+      <path d="M 880,475 C 1000,520 1060,560 1170,540" />
+      <path d="M 880,490 C 990,600 1060,650 1170,660" />
+    </g>
+
+    <!-- PAJ + Category triangle (top) - bidirectional implied -->
+    <g fill="none" stroke="#facc15" stroke-width="1.6" opacity="0.9">
+      <!-- Sales Agent <-> PAJ -->
+      <path d="M 640,400 C 600,300 580,220 540,140" marker-end="url(#arrow-paj)" />
+      <path d="M 540,140 C 580,220 600,300 640,400" marker-end="url(#arrow-paj)" stroke-dasharray="4 4" />
+      <!-- PAJ <-> Category -->
+      <path d="M 600,100 C 720,80 840,80 940,100" marker-end="url(#arrow-paj)" />
+      <path d="M 940,100 C 840,80 720,80 600,100" marker-end="url(#arrow-paj)" stroke-dasharray="4 4" />
+      <!-- Category -> Sales Agent (knobs) -->
+      <path d="M 960,140 C 920,220 850,330 800,400" marker-end="url(#arrow-paj)" />
+    </g>
+  </svg>
+
+  <!-- SECTION LABELS -->
+  <div class="section-label" style="left: 40px;  top: 90px;">Integration IN — represented in the agent</div>
+  <div class="section-label" style="right: 40px; top: 90px; text-align: right;">Feedback OUT — insights from the agent</div>
+  <div class="section-label" style="left: 50%; transform: translateX(-50%); top: 30px;">The special triangle: skills per product cluster</div>
+
+  <!-- HUB -->
+  <div class="hub">
+    <div class="name">OUR TEAM</div>
+    <h2>Sales Agent Team</h2>
+    <div class="sub" style="color: var(--muted); font-size: 11.5px;">
+      Builds, combines, and connects two surfaces into new conversational journeys.
+    </div>
+    <div class="row">
+      <div class="product cues">
+        <div class="ptitle" style="color: var(--cue)">Cues</div>
+        <div class="pmeta">Inline conversational elements, all over the website</div>
+        <div>
+          <span class="pill cue">page-scoped</span>
+          <span class="pill cue">pre-cart pages</span>
+          <span class="pill cue">specialised per domain</span>
+        </div>
+      </div>
+      <div class="product sa">
+        <div class="ptitle" style="color: var(--sa)">Sales Agent</div>
+        <div class="pmeta">Full-screen, full-journey, until <code style="font-size:10px">/basket</code></div>
+        <div>
+          <span class="pill sa">harness</span>
+          <span class="pill sa">commerce</span>
+          <span class="pill sa">UI</span>
+          <span class="pill sa">skills</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOP: PAJ + Category triangle -->
+  <div class="node tag-paj" style="left: 470px; top: 80px; width: 180px;">
+    <div class="title" style="color: var(--paj);">Product Advice Journey</div>
+    <div class="sub">Owns clusters, ground truth, considerations. Skills are built <em>with</em> them.</div>
+  </div>
+  <div class="node tag-paj" style="left: 880px; top: 80px; width: 220px;">
+    <div class="title" style="color: var(--paj);">Category teams</div>
+    <div class="sub">Own assortment + cluster expertise. Want <strong>knobs</strong> to shape their agent.</div>
+    <div style="margin-top:6px;">
+      <span class="pill" style="color: var(--paj); border-color:#5e4a10">today: instructions</span>
+      <span class="pill" style="color: var(--paj); border-color:#5e4a10">questions</span>
+      <span class="pill" style="color: var(--paj); border-color:#5e4a10">filters</span>
+      <span class="pill" style="color: var(--muted)">future: UI</span>
+      <span class="pill" style="color: var(--muted)">future: cluster features</span>
+    </div>
+  </div>
+
+  <!-- LEFT: Integration IN -->
+  <div class="node tag-in" style="left: 40px;  top: 150px; width: 200px;">
+    <div class="title" style="color: var(--in);">Pre-cart teams</div>
+    <div class="sub">Own pre-cart pages. We integrate specialised cues onto their pages.</div>
+  </div>
+  <div class="node tag-in" style="left: 30px;  top: 230px; width: 170px;">
+    <div class="title" style="color: var(--in);">Stores</div>
+    <div class="sub">Want a store agent in the journey.</div>
+  </div>
+  <div class="node tag-in" style="left: 30px;  top: 310px; width: 170px;">
+    <div class="title" style="color: var(--in);">Insurances</div>
+    <div class="sub">Represented during the conversation.</div>
+  </div>
+  <div class="node tag-in" style="left: 30px;  top: 390px; width: 170px;">
+    <div class="title" style="color: var(--in);">Installation services</div>
+  </div>
+  <div class="node tag-in" style="left: 30px;  top: 470px; width: 170px;">
+    <div class="title" style="color: var(--in);">Energy contracts</div>
+  </div>
+  <div class="node tag-in" style="left: 30px;  top: 550px; width: 170px;">
+    <div class="title" style="color: var(--in);">B2B</div>
+    <div class="sub">B2B-shaped flows in the agent.</div>
+  </div>
+  <div class="node tag-in" style="left: 30px;  top: 630px; width: 170px;">
+    <div class="title" style="color: var(--in);">Product support</div>
+  </div>
+  <div class="node tag-in" style="left: 40px;  top: 710px; width: 200px;">
+    <div class="title" style="color: var(--in);">Cross-sell</div>
+    <div class="sub">Wants attachment moments inside the agent.</div>
+  </div>
+
+  <!-- RIGHT: Feedback OUT -->
+  <div class="node tag-out" style="right: 40px; top: 150px; width: 220px;">
+    <div class="title" style="color: var(--out);">Category teams</div>
+    <div class="sub">Read convos → assortment, content, agent quality per cluster.</div>
+  </div>
+  <div class="node tag-out" style="right: 40px; top: 270px; width: 220px;">
+    <div class="title" style="color: var(--out);">Pre-cart domain</div>
+    <div class="sub">Insights → website organisation & new UI / visualisations.</div>
+  </div>
+  <div class="node tag-out" style="right: 40px; top: 390px; width: 220px;">
+    <div class="title" style="color: var(--out);">Product Advice Journey</div>
+    <div class="sub">Conversation signal → improve ground truth.</div>
+  </div>
+  <div class="node tag-out" style="right: 40px; top: 510px; width: 220px;">
+    <div class="title" style="color: var(--out);">Marketing</div>
+    <div class="sub">Retargeting, personas, messaging.</div>
+  </div>
+  <div class="node tag-out" style="right: 40px; top: 630px; width: 220px;">
+    <div class="title" style="color: var(--out);">Sales Agent team itself</div>
+    <div class="sub">New capabilities & UI driven by real interactions.</div>
+  </div>
+</div>
+
+<footer>
+  Save: <code>docs/team-context.md</code> holds the written description for future sessions.
+  Tip: open this file directly in a browser — it's a single static HTML, no build step.
+</footer>
+
+</body>
+</html>
